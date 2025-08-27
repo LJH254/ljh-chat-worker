@@ -15,13 +15,21 @@
 			}
 		]
 	},
+	"migrations": [
+		{
+			"tag": "v1",
+			"new_sqlite_classes": [
+				"ChatRoom"
+			]
+		}
+	],
 	"observability": {
 		"enabled": true
 	},
 	"kv_namespaces": [
 		{
-			"binding": "ljh_chat_kv",
-			"id": "15b3567ed6594066a1506ddcdb260374"
+			"binding": "chat_user_kv",
+			"id": "5a850acc5b4d412982255675290fb10d"
 		}
 	]
 

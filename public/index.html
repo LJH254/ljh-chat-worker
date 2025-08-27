@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="icon" href="static/favicon.ico" type="image/x-icon">
+    <title>聊天小网站 | Made by LJH</title>
+
+    <script src="static/plugins/bootstrap-5.1.3-dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="static/plugins/bootstrap-5.1.3-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="static/css/font_awesome/all.css">
+    <link rel="stylesheet" href="static/css/font_awesome/duotone-regular.css">
+
+    <link rel="stylesheet" href="static/css/utils/navigator.css">
+    <link rel="stylesheet" href="static/css/utils/modal.css">
+    <link rel="stylesheet" href="static/css/utils/sidebar.css">
+    <link rel="stylesheet" href="static/css/utils/toast.css">
+
+    <link rel="stylesheet" href="static/css/main/chat.css">
+
+    <script src="static/js/common.js"></script>
+
+    <script src="static/js/main/chat.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="fa-solid fa-comments" style="color: #02a102;"></i>
+                <span class="website-name">聊天小网站</span>
+            </a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-4">
+                    <li class="nav-item">
+                        <a href="/chat/" class="nav-link active">
+                            <i class="fa-duotone fa-regular fa-house"></i>
+                            <span>主页</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/envelope/" class="nav-link">
+                            <i class="fa-duotone fa-regular fa-envelope"></i>
+                            <span>抢红包</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a data-bs-toggle="modal" data-bs-target="#phoneModal" class="nav-link" style="cursor: pointer;">
+                            <i class="fa-duotone fa-regular fa-phone"></i>
+                            <span>视频通话</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="d-flex align-items-center user-name">
+                <i class="fa-regular fa-circle-user" style="margin-right: 5px;"></i>
+                <span id="user-nickname">{{ nickname }}</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sidebar">
+        <div class="sidebar">
+            <div class="sidebar-content">
+                <a href="/chat/" class="sidebar-link">
+                    <i class="fa-duotone fa-regular fa-house i-margin"></i>
+                    主页
+                </a>
+                <a href="/envelope/" class="sidebar-link sidebar-link-now">
+                    <i class="fa-duotone fa-regular fa-envelope i-margin"></i>
+                    抢红包
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <button class="sidebar-toggle">
+        <i class="fa-solid fa-bars fa-xs"></i>
+    </button>
+
+    <audio id="msgAudio">
+        <source src="static/sound/ding.wav" type="audio/mpeg">
+    </audio>
+
+    <div class="container-lg d-flex align-items-center justify-content-center flex-grow-1" style="flex: 1;">
+        <div class="toast-container">
+            <div id="tipToast" style="animation: fadeIn 0.3s;border-radius: 12px;" class="toast align-items-center bg-white" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body" id="toast-body">
+                        <div id="toastIcon" style="margin-right: 6px;">
+                            <!-- 这里填充图标 -->
+                        </div>
+                        <div id="toastText">
+                            <!-- 这里填充提示 -->
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close toast-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="toast-container">
+            <div id="callToast" class="toast call-toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+                <div class="toast-header">
+                    <span class="call-icon">
+                        <i class="fa-solid fa-phone"></i>
+                    </span>
+                    <strong class="me-auto">来电提醒</strong>
+                    <small>刚刚</small>
+                </div>
+                <div class="toast-body custom-toast">
+                    <div class="caller-info">
+                        <div id="caller-avatar" class="caller-avatar"></div>
+                        <div class="caller-details">
+                            <h5 id="caller-details"></h5>
+                        </div>
+                    </div>
+                    <div class="call-actions">
+                        <button id="acceptCall" class="btn-call btn-accept" onclick="acceptCall();">
+                            <i class="fa-solid fa-phone fa-shake"></i>
+                        </button>
+                        <button id="declineCall" class="btn-call btn-decline" onclick="declineCall();">
+                            <i class="fa-solid fa-phone-hangup"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-container">
+            <div class="chat-history" id="chatHistory"></div>
+
+            <form onsubmit="event.preventDefault(); sendMessage();" style="width: 100%">
+                <div class="input-container">
+                    <input type="text" id="userMessage" class="input-send" placeholder="连接关闭，无法聊天" required disabled>
+                    <button id="btn-send" type="submit" class="btn btn-primary btn-send" disabled>
+                        <i class="fa-solid fa-paper-plane i-margin" style="color: #ffffff;"></i>
+                        发送
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="modal fade" id="AncModal" tabindex="-1" style="color: #000;" aria-labelledby="AncTitleLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="AncTitleLabel" style="margin-left: 8px;font-size: 1rem;">网站公告</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" style="padding: 1.1rem;">
+                        <p style="font-size: 1.6rem;">聊天小网站 | Made by LJH</p>
+                        <p class="mt-2">由LJH开发，仅供LJH和CYL使用，其他人不得使用。</p>
+                        <div style="border-top: 3px solid #dee2e6;margin: 15px 0;"></div>
+                        <p>网站版本：1.0.2</p>
+                        <p>更新说明：</p>
+                        <ol>
+                            <li>
+                                界面有所优化，修复了部分bug。
+                            </li>
+                            <li>
+                                增加红包领取系统（详见侧边栏"红包"按钮）。用户不仅可以领取红包（余额可用于进行视频通话），还可以自行发布红包。
+                            </li>
+                        </ol>
+                        功能预告：下一版本中会增加视频通话功能。
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="Anc-btn-complete" data-bs-dismiss="modal">完成</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="phoneModal" tabindex="-1" style="color: #000;" aria-labelledby="PhoneTitleLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="PhoneTitleLabel" style="margin-left: 8px;font-size: 1rem;">发起通话</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" style="padding: 1.1rem;">
+                        <div class="mb-3 form-group">
+                            <div class="input-group">
+                                <span class="input-group-text">选择接收方</span>
+                                <select class="form-select" id="calleeSelect">
+                                <option value="" selected>--请选择--</option>
+<!--                                    {% for user in users %}-->
+<!--                                        {% if user.csrftoken != csrfToken %}-->
+<!--                                            <option value="{{ user.nickname }}">{{ user.nickname }}</option>-->
+<!--                                        {% endif %}-->
+<!--                                    {% endfor %}-->
+                                </select>
+                            </div>
+
+                            <small class="text-muted">
+                                <i class="fa-solid fa-circle-info" style="color: #2ea4ff;"></i>
+                                提示：通话一次将消费两元，将会从发起方账户余额内扣除。
+                            </small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="rc-btn-complete" onclick="requestCall();" disabled>
+                            <span id="rc-spinner" class="spinner-border spinner-border-sm" aria-hidden="true" style="display: none;"></span>
+                            <span id="rc-span">完成</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<!--		<div class="modal fade" id="NMModal" tabindex="-1" style="color: #000;" aria-labelledby="NMTitleLabel" aria-hidden="true" data-bs-backdrop="static">-->
+<!--            <div class="modal-dialog modal-dialog-centered">-->
+<!--                <div class="modal-content" style="box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);">-->
+<!--                    <div class="modal-header">-->
+<!--                        <h5 class="modal-title" id="NMTitleLabel" style="margin-left: 8px;font-size: 1rem;">输入昵称</h5>-->
+<!--                    </div>-->
+<!--                    <div class="modal-body" style="padding: 1.1rem;">-->
+<!--                        <input id="nickname" name="nickname" class="form-control" placeholder="这是你第一次访问，输入个昵称吧！">-->
+<!--                    </div>-->
+<!--                    <div class="modal-footer">-->
+<!--                        <button type="button" class="btn btn-primary" id="NM-btn-complete" data-bs-dismiss="modal" onclick="m_nickname();" disabled>完成</button>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+    </div>
+</body>
+</html>
