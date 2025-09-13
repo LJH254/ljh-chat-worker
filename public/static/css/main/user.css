@@ -1,0 +1,25 @@
+.user-container {
+	height: 100vh;
+	background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.user-card {
+	border-radius: 15px;
+	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.form-control:focus {
+	border-color: #7c8ff7;
+	box-shadow: 0 0 0 0.25rem rgba(124, 143, 247, 0.25);
+}
+
+.btn-custom {
+	background-color: #6677ff;
+	color: white;
+	transition: all 0.3s ease;
+}
+
+.btn-custom:hover {
+	background-color: #5566ee;
+	transform: translateY(-2px);
+}

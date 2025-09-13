@@ -1,3 +1,6 @@
+import { checkAuth, logout } from './auth.js';
+
+
 let socket;
 let AncModal;
 // let NMModal;
@@ -37,12 +40,12 @@ function main() {
 
         MessageElement.style.animation = "messagePop 0.3s ease-out";
 
-		// if (msg['csrf_token'] === csrfToken) {
-        //     MessageElement.classList.add("user-message");
-        // }
-        // else {
-        //     MessageElement.classList.add("bot-message");
-        // }
+		if (msg['username'] === username) {
+            MessageElement.classList.add("user-message");
+        }
+        else {
+            MessageElement.classList.add("bot-message");
+        }
 		MessageElement.classList.add("user-message");
 
         MessageElement.textContent = msg['message'];
@@ -111,7 +114,8 @@ function sendMessage() {
 
     const messageData = {
         message: message,
-        // csrfToken: csrfToken
+        username: username,
+		timestamp: new Date().toLocaleString()
     };
 
     socket.send(JSON.stringify(messageData));
@@ -191,8 +195,17 @@ let toast;
 let call_toast;
 let acceptCall;
 let declineCall;
+let username;
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+	username = (await checkAuth())[1];
+
+	if (username) {
+		document.getElementById('username').textContent = username;
+	} else {
+		open_page(`/login`);
+	}
+
     AncModal = new bootstrap.Modal(document.getElementById('AncModal'));
     // NMModal = new bootstrap.Modal(document.getElementById('NMModal'));
     rcModal = new bootstrap.Modal(document.getElementById('phoneModal'));
@@ -218,6 +231,11 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('calleeSelect').addEventListener('change', (e) => {
         document.getElementById('rc-btn-complete').disabled = !e.target.value;
     })
+
+	document.getElementById('message-input-form').onsubmit = (e) => {
+		e.preventDefault();
+		sendMessage();
+	}
 
     toastEl = document.getElementById('tipToast');
     toast = new bootstrap.Toast(toastEl, {

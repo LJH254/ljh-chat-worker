@@ -20,7 +20,7 @@
 
     <script src="static/js/common.js"></script>
 
-    <script src="static/js/main/chat.js"></script>
+    <script src="static/js/main/chat.js" type="module"></script>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg">
@@ -37,12 +37,12 @@
                             <span>主页</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="/envelope/" class="nav-link">
-                            <i class="fa-duotone fa-regular fa-envelope"></i>
-                            <span>抢红包</span>
-                        </a>
-                    </li>
+<!--                    <li class="nav-item">-->
+<!--                        <a href="/envelope/" class="nav-link">-->
+<!--                            <i class="fa-duotone fa-regular fa-envelope"></i>-->
+<!--                            <span>抢红包</span>-->
+<!--                        </a>-->
+<!--                    </li>-->
                     <li class="nav-item">
                         <a data-bs-toggle="modal" data-bs-target="#phoneModal" class="nav-link" style="cursor: pointer;">
                             <i class="fa-duotone fa-regular fa-phone"></i>
@@ -53,25 +53,25 @@
             </div>
             <div class="d-flex align-items-center user-name">
                 <i class="fa-regular fa-circle-user" style="margin-right: 5px;"></i>
-                <span id="user-nickname">{{ nickname }}</span>
+                <span id="username"></span>
             </div>
         </div>
     </nav>
 
-    <div class="sidebar">
-        <div class="sidebar">
-            <div class="sidebar-content">
-                <a href="/chat/" class="sidebar-link">
-                    <i class="fa-duotone fa-regular fa-house i-margin"></i>
-                    主页
-                </a>
-                <a href="/envelope/" class="sidebar-link sidebar-link-now">
-                    <i class="fa-duotone fa-regular fa-envelope i-margin"></i>
-                    抢红包
-                </a>
-            </div>
-        </div>
-    </div>
+<!--    <div class="sidebar">-->
+<!--        <div class="sidebar">-->
+<!--            <div class="sidebar-content">-->
+<!--                <a href="/chat/" class="sidebar-link">-->
+<!--                    <i class="fa-duotone fa-regular fa-house i-margin"></i>-->
+<!--                    主页-->
+<!--                </a>-->
+<!--                <a href="/envelope/" class="sidebar-link sidebar-link-now">-->
+<!--                    <i class="fa-duotone fa-regular fa-envelope i-margin"></i>-->
+<!--                    抢红包-->
+<!--                </a>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
 
     <button class="sidebar-toggle">
         <i class="fa-solid fa-bars fa-xs"></i>
@@ -129,7 +129,7 @@
         <div class="chat-container">
             <div class="chat-history" id="chatHistory"></div>
 
-            <form onsubmit="event.preventDefault(); sendMessage();" style="width: 100%">
+            <form id="message-input-form" style="width: 100%">
                 <div class="input-container">
                     <input type="text" id="userMessage" class="input-send" placeholder="连接关闭，无法聊天" required disabled>
                     <button id="btn-send" type="submit" class="btn btn-primary btn-send" disabled>

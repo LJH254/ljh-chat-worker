@@ -67,6 +67,23 @@ body, html {
     font-size: 0.9em;
 }
 
+.message-info {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+    font-size: 0.75rem;
+    color: #666;
+}
+
+.message-sender {
+    font-weight: 600;
+}
+
+.message-time {
+    opacity: 0.8;
+    margin-left: 10px;
+}
+
 @keyframes messagePop {
     0% { transform: scale(0.8); opacity: 0; }
     100% { transform: scale(1); opacity: 1; }

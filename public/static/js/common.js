@@ -1,3 +1,6 @@
+const API_BASE = "https://websocket.ljhchat.xyz";
+
+
 function getCookie(name) {
     const cookieValue = document.cookie
         .split('; ')
@@ -38,13 +41,15 @@ function open_page(url) {
 
 document.addEventListener('DOMContentLoaded', () => {
     let _tt = document.getElementById('tipToast');
-    _tt.addEventListener('show.bs.toast', function() {
-        _tt.style.animation = 'fadeIn 0.3s';
-    });
+	if (_tt) {
+		_tt.addEventListener('show.bs.toast', function() {
+			_tt.style.animation = 'fadeIn 0.3s';
+		});
 
-    _tt.addEventListener('hide.bs.toast', function() {
-        _tt.style.animation = 'fadeOut 0.3s';
-    });
+		_tt.addEventListener('hide.bs.toast', function() {
+			_tt.style.animation = 'fadeOut 0.3s';
+		});
+	}
 
     let _modalEls = document.querySelectorAll('.modal');
 
